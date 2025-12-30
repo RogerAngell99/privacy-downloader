@@ -2,18 +2,17 @@
 
 Ferramenta para baixar mídias de perfis do Privacy.com.br
 
-## 🚀 Instalação Rápida
+## 🚀 Instalação
 
 ### 🤖 Termux (Android)
 
-```bash
-curl -sL https://raw.githubusercontent.com/RogerAngell99/privacy-downloader/playwright/install.sh | bash
-```
+Veja instruções completas em [TERMUX_SETUP.md](TERMUX_SETUP.md)
 
-Após instalação, edite suas credenciais e execute:
+**Resumo:**
 ```bash
-nano ~/privacy-downloader/.secrets.yaml
-privacy
+pkg install -y proot-distro
+proot-distro install ubuntu
+# Ver TERMUX_SETUP.md para comandos completos
 ```
 
 ### 💻 Windows/Linux
@@ -23,37 +22,19 @@ git clone -b playwright https://github.com/RogerAngell99/privacy-downloader.git
 cd privacy-downloader
 pip install -r requirements.txt
 playwright install chromium
+python main.py
 ```
 
 ## ⚙️ Configuração
 
-### Credenciais (Automático)
-
-Na primeira execução, o script vai perguntar:
+Na primeira execução, o script pergunta automaticamente:
 ```
 📧 Digite seu email/CPF: 
 🔑 Digite sua senha:
 💾 Salvar credenciais para próximas execuções? (s/n):
 ```
 
-Se você salvar, as credenciais ficam em `.secrets.yaml` e não será perguntado novamente.
-
-### Configuração Manual (Opcional)
-
-**Credenciais** (`.secrets.yaml`):
-```yaml
-user: "seu_email@exemplo.com"
-pwd: "sua_senha"
-```
-
-**Diretório de download** (`settings.yaml`):
-```yaml
-# Windows
-downloaddir: C:\downloads\privacy
-
-# Linux/Termux
-downloaddir: ~/storage/downloads/privacy
-```
+Digitando **s**, as credenciais são salvas e você não precisa digitar novamente!
 
 ## 📖 Como usar
 
@@ -61,21 +42,15 @@ downloaddir: ~/storage/downloads/privacy
 python main.py
 ```
 
-Quando aparecer a lista de perfis, digite:
-- `0` para baixar todos os perfis
-- Número do perfil para baixar apenas aquele
+Quando aparecer a lista de perfis:
+- `0` = baixar todos os perfis
+- Número do perfil = baixar apenas aquele
 
 ### Opções
 
 ```bash
-python main.py --backlog  # Baixa apenas mídias pendentes no banco
+python main.py --backlog  # Baixa apenas mídias pendentes
 ```
-
-## 📋 Requisitos
-
-- Python 3.8+
-- FFmpeg (para vídeos HLS)
-- Playwright + Chromium
 
 ## 📱 Compatibilidade
 
@@ -83,7 +58,7 @@ python main.py --backlog  # Baixa apenas mídias pendentes no banco
 |------------|--------|
 | Windows | ✅ |
 | Linux | ✅ |
-| Termux (Android) | ✅ |
+| Termux (Android) | ✅ (via proot-distro) |
 
 ## 📄 Licença
 

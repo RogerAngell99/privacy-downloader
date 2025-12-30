@@ -1,135 +1,89 @@
 # 🤖 Guia de Instalação no Termux (Android)
 
-## 🚀 Instalação Rápida (Um Comando)
+## 🚀 Instalação Rápida
 
-Cole este comando no Termux:
+Execute os comandos abaixo **um por um** no Termux:
 
 ```bash
-curl -sL https://raw.githubusercontent.com/RogerAngell99/privacy-downloader/playwright/install.sh | bash
+# 1. Atualiza e instala proot-distro
+pkg update -y && pkg install -y proot-distro
+
+# 2. Instala Ubuntu (aguarde ~5 minutos)
+proot-distro install ubuntu
+
+# 3. Configura tudo dentro do Ubuntu
+proot-distro login ubuntu -- bash -c "
+apt-get update && apt-get install -y python3 python3-pip python3-venv git ffmpeg
+git clone -b playwright https://github.com/RogerAngell99/privacy-downloader.git /root/privacy-downloader
+cd /root/privacy-downloader
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt playwright
+playwright install chromium
+mkdir -p /root/downloads/privacy
+echo 'downloaddir: /root/downloads/privacy' > settings.yaml
+"
+
+# 4. Cria atalho 'privacy'
+echo 'proot-distro login ubuntu -- bash -c "cd /root/privacy-downloader && source venv/bin/activate && python main.py"' > $PREFIX/bin/privacy
+chmod +x $PREFIX/bin/privacy
 ```
 
-> **Nota:** No Termux, o script instala Ubuntu via proot-distro porque o Playwright não funciona nativamente no Android.
+## ▶️ Como Usar
 
-Depois é só executar:
 ```bash
 privacy
 ```
 
-O script vai pedir seu **email** e **senha** na primeira execução e salva automaticamente!
+Na primeira execução, o script vai perguntar:
+```
+📧 Digite seu email/CPF: 
+🔑 Digite sua senha:
+💾 Salvar credenciais para próximas execuções? (s/n):
+```
+
+Digite **s** para salvar e não precisar digitar novamente!
 
 ---
 
-## Instalação Manual
+## ⚠️ Notas Importantes
 
-### Pré-requisitos
-
-Instale os pacotes necessários no Termux:
-
-```bash
-# Atualiza repositórios
-pkg update && pkg upgrade -y
-
-# Instala Python e dependências
-pkg install python python-pip git ffmpeg -y
-
-# Instala bibliotecas de sistema necessárias
-pkg install libxml2 libxslt libjpeg-turbo -y
-```
-
-## Instalação do Projeto
-
-```bash
-# Clone ou copie o projeto para algum diretório
-cd ~/storage/shared/privacy-scraper
-
-# Instala dependências Python
-pip install -r requirements.txt
-
-# Instala Playwright (IMPORTANTE: no Termux precisa de setup especial)
-pip install playwright
-
-# Instala os navegadores do Playwright
-# NOTA: No Termux, apenas Chromium funciona bem
-playwright install chromium
-```
-
-## Configuração
-
-1. **Crie/Edite o arquivo `settings.yaml`**:
-```yaml
-downloaddir: /storage/emulated/0/Download/privacy
-```
-
-2. **Crie/Edite o arquivo `.secrets.yaml`** com suas credenciais:
-```yaml
-user: seu_email@exemplo.com
-pwd: sua_senha
-```
-
-## ⚠️ Notas Importantes para Termux
-
-### Armazenamento
-Para acessar o armazenamento externo do Android:
-```bash
-termux-setup-storage
-```
-Isso cria a pasta `~/storage` com acesso ao armazenamento.
-
-### Chromium no Termux
-O script já inclui flags especiais para rodar Chromium no Termux:
-- `--no-sandbox`
-- `--disable-setuid-sandbox`
-- `--disable-dev-shm-usage`
-- `--single-process`
+### Por que Ubuntu via proot?
+O Playwright não tem binários para Android/ARM, então usamos Ubuntu dentro do Termux via `proot-distro`.
 
 ### Memória
-Em dispositivos com pouca RAM (< 4GB), pode haver problemas. Considere:
-- Fechar outros apps antes de rodar
-- Usar `--single-process` (já ativado automaticamente)
+Dispositivos com menos de 4GB RAM podem ter problemas. Feche outros apps antes de executar.
 
-## Execução
+### Onde ficam os downloads?
+Os arquivos são salvos em `/root/downloads/privacy` dentro do Ubuntu.
 
+Para copiar para o armazenamento do Android:
 ```bash
-# Navega até o diretório do projeto
-cd ~/storage/shared/privacy-scraper
-
-# Executa o script
-python main.py
-
-# Ou com a flag de backlog
-python main.py --backlog
+proot-distro login ubuntu -- cp -r /root/downloads/privacy ~/storage/downloads/
 ```
 
-## Alternativa: Usar proot-distro
+---
 
-Se tiver problemas com Chromium nativo, considere usar uma distro Linux via proot:
-
-```bash
-pkg install proot-distro
-proot-distro install ubuntu
-proot-distro login ubuntu
-
-# Dentro do Ubuntu, instale normalmente:
-apt update && apt install python3 python3-pip ffmpeg -y
-pip3 install -r requirements.txt
-playwright install chromium
-python3 main.py
-```
-
-## Troubleshooting
+## 🔧 Troubleshooting
 
 ### Erro: "cannot allocate memory"
 - Feche outros apps
 - Reinicie o Termux
 
-### Erro: "No module named 'playwright'"
+### Erro ao executar `privacy`
 ```bash
-pip install --upgrade playwright
-playwright install chromium
+# Entra no Ubuntu manualmente
+proot-distro login ubuntu
+
+# Executa o script
+cd /root/privacy-downloader
+source venv/bin/activate
+python main.py
 ```
 
-### Erro: "Permission denied" ao salvar arquivos
+### Reinstalar do zero
 ```bash
-termux-setup-storage
-# Então use ~/storage/downloads/ como downloaddir
+proot-distro remove ubuntu
+proot-distro install ubuntu
+# Repita os passos de instalação
 ```
