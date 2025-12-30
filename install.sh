@@ -30,9 +30,11 @@ if [ ! -d "$HOME/storage" ]; then
 fi
 
 # Instala Ubuntu se não existir
-if ! proot-distro list | grep -q "ubuntu"; then
+if proot-distro list 2>/dev/null | grep -q "ubuntu"; then
+    echo "✅ Ubuntu já está instalado."
+else
     echo "📥 Instalando Ubuntu (pode demorar)..."
-    proot-distro install ubuntu
+    proot-distro install ubuntu || true
 fi
 
 # Executa a instalação dentro do Ubuntu diretamente
