@@ -46,8 +46,11 @@ export DEBIAN_FRONTEND=noninteractive
 echo "📦 Atualizando pacotes (aguarde)..."
 apt-get update
 
-echo "📦 Instalando dependências..."
+echo "📦 Instalando dependências do sistema..."
 apt-get install -y python3 python3-pip python3-venv git ffmpeg curl wget
+
+echo "📦 Instalando dependências do Chromium..."
+apt-get install -y libnspr4 libnss3 libatk1.0-0t64 libatk-bridge2.0-0t64 libcups2t64 libdrm2 libxkbcommon0 libxcomposite1 libxdamage1 libxfixes3 libxrandr2 libgbm1 libasound2t64 || apt-get install -y libnspr4 libnss3 libatk1.0-0 libatk-bridge2.0-0 libcups2 libdrm2 libxkbcommon0 libxcomposite1 libxdamage1 libxfixes3 libxrandr2 libgbm1 libasound2 || true
 
 # Define diretório
 INSTALL_DIR="/root/privacy-downloader"
