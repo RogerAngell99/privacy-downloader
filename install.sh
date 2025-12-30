@@ -43,9 +43,11 @@ proot-distro login ubuntu -- bash -c '
 set -e
 export DEBIAN_FRONTEND=noninteractive
 
-echo "📦 Instalando pacotes..."
-apt-get update -qq
-apt-get install -y python3 python3-pip python3-venv git ffmpeg curl wget > /dev/null 2>&1
+echo "📦 Atualizando pacotes (aguarde)..."
+apt-get update
+
+echo "📦 Instalando dependências..."
+apt-get install -y python3 python3-pip python3-venv git ffmpeg curl wget
 
 # Define diretório
 INSTALL_DIR="/root/privacy-downloader"
