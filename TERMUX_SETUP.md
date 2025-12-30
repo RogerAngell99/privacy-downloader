@@ -1,6 +1,28 @@
 # 🤖 Guia de Instalação no Termux (Android)
 
-## Pré-requisitos
+## 🚀 Instalação Rápida (Um Comando)
+
+Cole este comando no Termux:
+
+```bash
+curl -sL https://raw.githubusercontent.com/RogerAngell99/privacy-downloader/playwright/install.sh | bash
+```
+
+Após a instalação, edite suas credenciais:
+```bash
+nano ~/privacy-downloader/.secrets.yaml
+```
+
+E execute:
+```bash
+privacy
+```
+
+---
+
+## Instalação Manual
+
+### Pré-requisitos
 
 Instale os pacotes necessários no Termux:
 
