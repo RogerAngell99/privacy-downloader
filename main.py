@@ -208,16 +208,24 @@ async def fetchLinks(page: pw.Page, jar, profile):
     
     # Handler para interceptar respostas da API de timeline
     async def handle_response(response):
-        if 'timelinequeries/profile' in response.url or 'mediavideotoken' in response.url:
+        url = response.url
+        # Captura qualquer API do service.privacy ou da própria página que retorne JSON
+        if ('service.privacy' in url or 
+            'timelinequeries' in url or 
+            'mediavideotoken' in url or
+            'privacy.com.br/api' in url or
+            '/Index' in url or
+            '/profile' in url):
             try:
-                if response.status == 200:
+                content_type = response.headers.get('content-type', '')
+                if response.status == 200 and 'json' in content_type.lower():
                     json_data = await response.json()
                     captured_timeline_data.append({
-                        'url': response.url,
+                        'url': url,
                         'data': json_data
                     })
             except Exception as e:
-                print(f"Erro ao processar resposta: {e}")
+                pass  # Ignora erros de parse
     
     # Registra o handler de resposta
     page.on('response', handle_response)
@@ -265,13 +273,28 @@ async def fetchLinks(page: pw.Page, jar, profile):
         for i, resp in enumerate(captured_timeline_data):
             url = resp.get('url', 'N/A')
             data = resp.get('data', {})
+            data_preview = str(data)[:100] if data else 'vazio'
             print(f"  [{i}] {url[:80]}...")
+            print(f"      Dados: {data_preview}...")
             
         # Procura especificamente por timelinequeries
         timeline_responses = [r for r in captured_timeline_data if 'timelinequeries' in r.get('url', '')]
         print(f"\nRespostas de timelinequeries: {len(timeline_responses)}")
         
-        if timeline_responses:
+        # Se não encontrou timelinequeries, mostra primeira resposta com dados úteis
+        if not timeline_responses:
+            print("NENHUMA resposta de timelinequeries capturada!")
+            print("\nTentando encontrar dados em outras respostas...")
+            for resp in captured_timeline_data:
+                data = resp.get('data', {})
+                if isinstance(data, dict):
+                    keys = list(data.keys())
+                    if keys:
+                        print(f"  URL: {resp.get('url', 'N/A')[:60]}...")
+                        print(f"  Keys: {keys}")
+                        print(f"  Amostra: {json.dumps(data, indent=2, default=str)[:500]}...")
+                        break
+        else:
             first_timeline = timeline_responses[0]
             print(f"URL Timeline: {first_timeline.get('url', 'N/A')}")
             data = first_timeline.get('data', {})
@@ -282,8 +305,6 @@ async def fetchLinks(page: pw.Page, jar, profile):
             elif isinstance(data, dict):
                 print(f"Tipo: Dict com keys: {list(data.keys())}")
                 print(f"Amostra JSON: {json.dumps(data, indent=2, default=str)[:2000]}...")
-        else:
-            print("NENHUMA resposta de timelinequeries capturada!")
     
     await parseTimelineData(captured_timeline_data, profile)
     
