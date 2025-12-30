@@ -85,10 +85,10 @@ playwright install-deps chromium 2>/dev/null || true
 # Cria arquivo de configuração
 echo "⚙️ Criando configuração..."
 cat > settings.yaml << EOF
-downloaddir: /root/downloads/privacy
+downloaddir: /data/data/com.termux/files/home/storage/downloads/privacy
 EOF
 
-mkdir -p /root/downloads/privacy
+mkdir -p /data/data/com.termux/files/home/storage/downloads/privacy 2>/dev/null || mkdir -p /root/downloads/privacy
 
 echo ""
 echo "✅ Instalação concluída dentro do Ubuntu!"
