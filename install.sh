@@ -44,7 +44,6 @@ cd "$INSTALL_DIR"
 
 # Instala dependências Python
 echo "🐍 Instalando dependências Python..."
-pip install --upgrade pip
 pip install -r requirements.txt
 
 # Instala Playwright e Chromium
