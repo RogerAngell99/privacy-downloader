@@ -27,13 +27,26 @@ playwright install chromium
 
 ## ⚙️ Configuração
 
-### 1. Credenciais (`.secrets.yaml`)
+### Credenciais (Automático)
+
+Na primeira execução, o script vai perguntar:
+```
+📧 Digite seu email/CPF: 
+🔑 Digite sua senha:
+💾 Salvar credenciais para próximas execuções? (s/n):
+```
+
+Se você salvar, as credenciais ficam em `.secrets.yaml` e não será perguntado novamente.
+
+### Configuração Manual (Opcional)
+
+**Credenciais** (`.secrets.yaml`):
 ```yaml
 user: "seu_email@exemplo.com"
 pwd: "sua_senha"
 ```
 
-### 2. Diretório de download (`settings.yaml`)
+**Diretório de download** (`settings.yaml`):
 ```yaml
 # Windows
 downloaddir: C:\downloads\privacy

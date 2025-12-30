@@ -8,15 +8,12 @@ Cole este comando no Termux:
 curl -sL https://raw.githubusercontent.com/RogerAngell99/privacy-downloader/playwright/install.sh | bash
 ```
 
-Após a instalação, edite suas credenciais:
-```bash
-nano ~/privacy-downloader/.secrets.yaml
-```
-
-E execute:
+Depois é só executar:
 ```bash
 privacy
 ```
+
+O script vai pedir seu **email** e **senha** na primeira execução e salva automaticamente!
 
 ---
 

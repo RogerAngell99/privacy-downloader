@@ -38,6 +38,62 @@ def get_terminal_cols():
         except:
             return 80  # Valor padrão seguro
 
+
+def setup_credentials():
+    """
+    Verifica se as credenciais existem. Se não existirem, pede ao usuário.
+    Salva as credenciais no arquivo .secrets.yaml para uso futuro.
+    """
+    from config import settings
+    import getpass
+    
+    # Verifica se as credenciais já existem e são válidas
+    has_user = hasattr(settings, 'user') and settings.user and settings.user != 'SEU_EMAIL_AQUI'
+    has_pwd = hasattr(settings, 'pwd') and settings.pwd and settings.pwd != 'SUA_SENHA_AQUI'
+    
+    if has_user and has_pwd:
+        return settings.user, settings.pwd
+    
+    print("\n" + "="*50)
+    print("🔐 Configuração de Credenciais")
+    print("="*50)
+    
+    if not has_user:
+        user = input("📧 Digite seu email/CPF: ").strip()
+    else:
+        user = settings.user
+        print(f"📧 Email: {user}")
+    
+    if not has_pwd:
+        # Tenta usar getpass para ocultar senha, mas fallback para input normal no Termux
+        try:
+            pwd = getpass.getpass("🔑 Digite sua senha: ").strip()
+        except:
+            pwd = input("🔑 Digite sua senha: ").strip()
+    else:
+        pwd = settings.pwd
+        print("🔑 Senha: ********")
+    
+    # Pergunta se quer salvar
+    save = input("\n💾 Salvar credenciais para próximas execuções? (s/n): ").strip().lower()
+    
+    if save in ['s', 'sim', 'y', 'yes', '']:
+        # Determina o diretório do script
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        secrets_path = os.path.join(script_dir, '.secrets.yaml')
+        
+        try:
+            with open(secrets_path, 'w', encoding='utf-8') as f:
+                f.write(f'user: "{user}"\n')
+                f.write(f'pwd: "{pwd}"\n')
+            print(f"✅ Credenciais salvas em: {secrets_path}")
+        except Exception as e:
+            print(f"⚠️ Não foi possível salvar: {e}")
+            print("  As credenciais serão usadas apenas nesta sessão.")
+    
+    print("="*50 + "\n")
+    return user, pwd
+
 url = "https://privacy.com.br/"
 base_url = "https://privacy.com.br/profile/"
 page_url = "https://privacy.com.br/Index?handler=PartialPosts&skip={0}&take={1}&nomePerfil={2}&agendado=false"
@@ -1099,6 +1155,9 @@ async def main(backlog):
     else:
         print(f"💻 Detectado: {platform.system()}")
     
+    # Configura/solicita credenciais
+    user_email, user_pwd = setup_credentials()
+    
     async with pw.async_playwright() as p:
         global profile
         
@@ -1126,13 +1185,13 @@ async def main(backlog):
         sleep(2)
         await page.goto(url)
         # await page.screenshot(path="ss.png")
-        user = page.get_by_label('Email/CPF')
-        await expect(user).to_be_editable(timeout=15000)
-        await user.type(settings.user)
+        user_field = page.get_by_label('Email/CPF')
+        await expect(user_field).to_be_editable(timeout=15000)
+        await user_field.type(user_email)
         sleep(1)
-        pwd = page.get_by_label('Senha')
-        await expect(pwd).to_be_editable(timeout=15000)
-        await pwd.type(settings.pwd)
+        pwd_field = page.get_by_label('Senha')
+        await expect(pwd_field).to_be_editable(timeout=15000)
+        await pwd_field.type(user_pwd)
         sleep(1)
         btn = page.get_by_role('button', name=re.compile('entrar',re.IGNORECASE))
         await btn.click()
