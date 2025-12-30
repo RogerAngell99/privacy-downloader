@@ -7,13 +7,17 @@ set -e
 echo "🤖 Privacy Downloader - Instalador Termux"
 echo "=========================================="
 
-# Atualiza pacotes
+# Configura dpkg para não pedir input (mantém versão atual em conflitos)
+export DEBIAN_FRONTEND=noninteractive
+
+# Atualiza pacotes (sem prompts interativos)
 echo "📦 Atualizando repositórios..."
-pkg update -y && pkg upgrade -y
+yes | pkg update -y
+yes | pkg upgrade -y -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" || true
 
 # Instala dependências do sistema
 echo "📦 Instalando dependências..."
-pkg install -y python python-pip git ffmpeg libxml2 libxslt libjpeg-turbo
+pkg install -y python python-pip git ffmpeg libxml2 libxslt libjpeg-turbo || true
 
 # Configura armazenamento (se ainda não configurado)
 if [ ! -d "$HOME/storage" ]; then
