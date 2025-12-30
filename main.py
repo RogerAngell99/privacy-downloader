@@ -26,6 +26,12 @@ is_android = hasattr(sys, 'getandroidapilevel') or 'ANDROID_ROOT' in os.environ 
 is_termux = 'com.termux' in os.environ.get('PREFIX', '') or os.path.exists('/data/data/com.termux')
 is_windows = platform.system() == 'Windows'
 
+if is_termux:
+    # Sobrescreve diretório de download no Termux para pasta pública
+    settings.downloaddir = "/storage/emulated/0/Download/"
+    print(f"📂 Modo Termux detectado. Download configurado para: {settings.downloaddir}")
+
+
 def get_terminal_cols():
     """Obtém colunas do terminal de forma segura (funciona no Termux)."""
     try:
