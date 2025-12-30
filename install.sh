@@ -3,8 +3,6 @@
 # Usa proot-distro com Ubuntu porque Playwright não funciona nativamente no Android/ARM
 # Uso: curl -sL https://raw.githubusercontent.com/RogerAngell99/privacy-downloader/playwright/install.sh | bash
 
-set -e
-
 echo "🤖 Privacy Downloader - Instalador Termux"
 echo "=========================================="
 echo ""
@@ -37,16 +35,12 @@ if ! proot-distro list | grep -q "ubuntu"; then
     proot-distro install ubuntu
 fi
 
-# Cria script de setup para rodar dentro do Ubuntu
-SETUP_SCRIPT="$HOME/privacy_setup.sh"
-cat > "$SETUP_SCRIPT" << 'INNERSCRIPT'
-#!/bin/bash
-set -e
+# Executa a instalação dentro do Ubuntu diretamente
+echo "🐧 Configurando Ubuntu..."
+proot-distro login ubuntu -- bash -c '
 export DEBIAN_FRONTEND=noninteractive
 
-echo "🐧 Configurando Ubuntu..."
-
-# Atualiza Ubuntu
+echo "📦 Instalando pacotes..."
 apt-get update -qq
 apt-get install -y -qq python3 python3-pip python3-venv git ffmpeg curl wget > /dev/null 2>&1
 
@@ -79,7 +73,7 @@ playwright install-deps chromium 2>/dev/null || true
 
 # Cria arquivo de configuração
 echo "⚙️ Criando configuração..."
-cat > settings.yaml << 'EOF'
+cat > settings.yaml << EOF
 downloaddir: /root/downloads/privacy
 EOF
 
@@ -87,14 +81,7 @@ mkdir -p /root/downloads/privacy
 
 echo ""
 echo "✅ Instalação concluída dentro do Ubuntu!"
-echo ""
-INNERSCRIPT
-
-chmod +x "$SETUP_SCRIPT"
-
-# Executa o setup dentro do Ubuntu
-echo "🐧 Executando instalação no Ubuntu..."
-proot-distro login ubuntu -- bash /root/privacy_setup.sh
+'
 
 # Cria script de execução no Termux
 echo "🔧 Criando atalho 'privacy'..."
@@ -103,9 +90,6 @@ cat > "$PREFIX/bin/privacy" << 'EOF'
 proot-distro login ubuntu -- bash -c "cd /root/privacy-downloader && source venv/bin/activate && python main.py $*"
 EOF
 chmod +x "$PREFIX/bin/privacy"
-
-# Remove script temporário
-rm -f "$SETUP_SCRIPT"
 
 echo ""
 echo "✅ Instalação concluída!"
