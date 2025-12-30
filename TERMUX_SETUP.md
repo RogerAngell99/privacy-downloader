@@ -8,6 +8,8 @@ Cole este comando no Termux:
 curl -sL https://raw.githubusercontent.com/RogerAngell99/privacy-downloader/playwright/install.sh | bash
 ```
 
+> **Nota:** No Termux, o script instala Ubuntu via proot-distro porque o Playwright não funciona nativamente no Android.
+
 Depois é só executar:
 ```bash
 privacy
