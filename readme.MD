@@ -1,41 +1,77 @@
-# Privacy Scraper
+# Privacy Downloader
 
-## Copyright 
-Creative Commons
+Ferramenta para baixar mídias de perfis do Privacy.com.br
 
-## Como instalar:
+## 🚀 Instalação Rápida
 
-1. Instale os requerimentos utilizando
+### 🤖 Termux (Android)
 
+```bash
+curl -sL https://raw.githubusercontent.com/RogerAngell99/privacy-downloader/playwright/install.sh | bash
 ```
+
+Após instalação, edite suas credenciais e execute:
+```bash
+nano ~/privacy-downloader/.secrets.yaml
+privacy
+```
+
+### 💻 Windows/Linux
+
+```bash
+git clone -b playwright https://github.com/RogerAngell99/privacy-downloader.git
+cd privacy-downloader
 pip install -r requirements.txt
-
+playwright install chromium
 ```
 
-2. Crie um arquivo na raiz chamado .secrets.yaml com a seguinte arvore:
-```
-user: "<email do usuario>"
-pwd: "<senha>"
+## ⚙️ Configuração
+
+### 1. Credenciais (`.secrets.yaml`)
+```yaml
+user: "seu_email@exemplo.com"
+pwd: "sua_senha"
 ```
 
-3. caso necessario, verifique a necessidade de rodar um
-```
-playwright install
+### 2. Diretório de download (`settings.yaml`)
+```yaml
+# Windows
+downloaddir: C:\downloads\privacy
+
+# Linux/Termux
+downloaddir: ~/storage/downloads/privacy
 ```
 
-4. No arquivo *settings.yaml*, verifique o caminho da pasta downloads.
-Coloque o caminho completa da pasta, exemplo:
-```
-downloaddir: C:\downloads
-```
+## 📖 Como usar
 
-
-## Como usar:
-
-1. Após tudo configurado, apenas faça
-```
+```bash
 python main.py
 ```
 
-2. Quando aparecer a lista de perfis, aperta o numero do perfil escolhido ou 0 para varrer todos os perfis.
+Quando aparecer a lista de perfis, digite:
+- `0` para baixar todos os perfis
+- Número do perfil para baixar apenas aquele
 
+### Opções
+
+```bash
+python main.py --backlog  # Baixa apenas mídias pendentes no banco
+```
+
+## 📋 Requisitos
+
+- Python 3.8+
+- FFmpeg (para vídeos HLS)
+- Playwright + Chromium
+
+## 📱 Compatibilidade
+
+| Plataforma | Status |
+|------------|--------|
+| Windows | ✅ |
+| Linux | ✅ |
+| Termux (Android) | ✅ |
+
+## 📄 Licença
+
+Creative Commons
