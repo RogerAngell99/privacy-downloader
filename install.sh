@@ -40,11 +40,12 @@ fi
 # Executa a instalação dentro do Ubuntu diretamente
 echo "🐧 Configurando Ubuntu..."
 proot-distro login ubuntu -- bash -c '
+set -e
 export DEBIAN_FRONTEND=noninteractive
 
 echo "📦 Instalando pacotes..."
 apt-get update -qq
-apt-get install -y -qq python3 python3-pip python3-venv git ffmpeg curl wget > /dev/null 2>&1
+apt-get install -y python3 python3-pip python3-venv git ffmpeg curl wget > /dev/null 2>&1
 
 # Define diretório
 INSTALL_DIR="/root/privacy-downloader"
@@ -61,12 +62,15 @@ cd "$INSTALL_DIR"
 # Cria ambiente virtual
 echo "🐍 Criando ambiente Python..."
 python3 -m venv venv
-source venv/bin/activate
+
+# Ativa o ambiente
+. venv/bin/activate
 
 # Instala dependências
 echo "🐍 Instalando dependências..."
-pip install --quiet -r requirements.txt
-pip install --quiet playwright
+pip install --upgrade pip > /dev/null 2>&1
+pip install -r requirements.txt > /dev/null 2>&1
+pip install playwright > /dev/null 2>&1
 
 # Instala navegador
 echo "🌐 Instalando Chromium (pode demorar)..."
