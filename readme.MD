@@ -6,14 +6,14 @@ Ferramenta para baixar mídias de perfis do Privacy.com.br
 
 ### 🤖 Termux (Android)
 
-Veja instruções completas em [TERMUX_SETUP.md](TERMUX_SETUP.md)
-
-**Resumo:**
+**Instalação com um comando:**
 ```bash
-pkg install -y proot-distro
-proot-distro install ubuntu
-# Ver TERMUX_SETUP.md para comandos completos
+curl -sL https://raw.githubusercontent.com/RogerAngell99/privacy-downloader/playwright/install.sh | bash
 ```
+
+Depois execute: `privacy`
+
+> Veja [TERMUX_SETUP.md](TERMUX_SETUP.md) para instalação manual ou solução de problemas.
 
 ### 💻 Windows/Linux
 
