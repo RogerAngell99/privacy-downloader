@@ -44,11 +44,13 @@ cd "$INSTALL_DIR"
 
 # Instala dependências Python
 echo "🐍 Instalando dependências Python..."
-pip install -r requirements.txt
+# No Termux, pip não pode ser atualizado - configuramos para ignorar
+export PIP_DISABLE_PIP_VERSION_CHECK=1
+pip install --no-cache-dir -r requirements.txt
 
 # Instala Playwright e Chromium
 echo "🌐 Instalando navegador (pode demorar)..."
-pip install playwright
+pip install --no-cache-dir playwright
 playwright install chromium
 
 # Cria arquivo de configuração
